@@ -24,12 +24,15 @@ Google Cloud credentials JSON for speech recognition
 
 2. API Keys
 Create a .env file with the following:
-
+```
 OPENAI_API_KEY=your_openai_api_key
 GOOGLE_APPLICATION_CREDENTIALS=credentials.json
+```
 
 🎬 Running the Bot
+```
 python start_conversation.py
+```
 
 The bot listens, thinks (via OpenAI), and replies in Les Gold’s voice.
 
@@ -44,6 +47,7 @@ F5-TTS (Orkhon TTS fine-tuned)
 
 Pygame for visual interaction
 
+```
 @article{chen-etal-2024-f5tts,
   title={F5-TTS: A Fairytaler that Fakes Fluent and Faithful Speech with Flow Matching}, 
   author={Yushen Chen and Zhikang Niu and Ziyang Ma and Keqi Deng and Chunhui Wang and Jian Zhao and Kai Yu and Xie Chen},
@@ -57,3 +61,4 @@ Pygame for visual interaction
   howpublished = {\url{https://github.com/talshaparov/orkhon-tts}},
   year = {2023},
 }
+```
