@@ -1,28 +1,24 @@
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from openai import OpenAI
 from tts import generate_speech
 import sys
 from pydub import AudioSegment
-from pydub.playback import _play_with_simpleaudio as play  # Özel çağrı
+from pydub.playback import _play_with_simpleaudio as play 
 import re
-import time
 from typing import List
 import os
 import threading
 import queue
-import pyaudio
-from google.cloud import speech                                                                                                    
 from speech_rec import recognize_speech_while_pressed
 from realtime_lipsync import RealTimeLipSyncUI
 
 audio_queue = queue.Queue()
 
-def get_api_key(filename):
-    with open("api_key.txt", "r") as file:
-        api_key = file.read().strip()
-    return api_key
-
 def main(filename,face):
-    client = OpenAI(api_key=get_api_key(filename))
+    client = OpenAI(api_key=os.getenv("OPENAI-KEY"))
 
     messages = [{
         "role": "user",
@@ -32,9 +28,8 @@ def main(filename,face):
 
     print("💬 Chat with the GPT-4o pawn shop bot. Type 'exit' to quit.\n")
 
-    # Chat loop
     while True:
-        # Get response from GPT-4o
+
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=messages,
@@ -46,7 +41,7 @@ def main(filename,face):
         reply = response.choices[0].message.content
         #print("PawnBot:", reply, "\n")
         
-        generate(reply, ref_audio=r"C:\Users\alkan\OneDrive\Masaüstü\Dersler\term6\Foe\reference_audio.wav")  # Ses üretimi için referans ses dosyası
+        generate(reply, ref_audio=r"C:\Users\alkan\OneDrive\Masaüstü\Dersler\term6\Foe\reference_audio.wav")  # Reference audio for voice cloning
 
         messages.append({"role": "assistant", "content": reply})
 
@@ -64,12 +59,12 @@ def main(filename,face):
 
             
         messages.append({"role": "user", "content": user_input})
-      # Bu satır, ses tamamen bitene kadar bekler
+
 
 def audio_player_worker():
     while True:
         filename = audio_queue.get()
-        if filename is None:  # Kuyruğa None gelirse thread kapanır
+        if filename is None: 
             break
         audio = AudioSegment.from_file(filename, format="wav")
         playback = play(audio)
@@ -83,7 +78,7 @@ face = True
 lipsync = RealTimeLipSyncUI(open_img_path=r"C:\Users\alkan\Downloads\BotTalkTest\BotTalkTest\asset\open_mouth.png", closed_img_path=r"C:\Users\alkan\Downloads\BotTalkTest\BotTalkTest\asset\close_mouth.png",face = face)
 
 def split_into_batches_smart(text: str, batch_size: int = 20) -> List[str]:
-    # Cümlelere ayır
+    # Seperate to sentences
     sentences = re.split(r'(?<=[.!?])\s+', text)
     batches = []
     current_batch = []
@@ -93,12 +88,12 @@ def split_into_batches_smart(text: str, batch_size: int = 20) -> List[str]:
         words = sentence.strip().split()
         word_count = len(words)
 
-        # Eğer bu cümle eklendiğinde batch sınırı aşılmıyorsa, ekle
+        # Add the sentence if it's withing batch limit in total
         if current_word_count + word_count <= batch_size:
             current_batch.append(sentence.strip())
             current_word_count += word_count               
         else:
-            # Eğer cümle tek başına batch'ten büyükse, tek başına batch yap
+            # If the sentence is bigger than batch, make it a single batch
             if word_count > batch_size:
                 if current_batch:
                     batches.append(' '.join(current_batch))
@@ -106,20 +101,20 @@ def split_into_batches_smart(text: str, batch_size: int = 20) -> List[str]:
                 current_batch = []
                 current_word_count = 0
             else:
-                # Mevcut batch'i kapat, yeni batch başlat
+                # Close current batch, init new batch
                 if current_batch:
                     batches.append(' '.join(current_batch))
                 current_batch = [sentence.strip()]
                 current_word_count = word_count
 
-    # Son kalan batch'i ekle
+    # Add last batch
     if current_batch:
         batches.append(' '.join(current_batch))
 
     return batches
 
 def play_audio_threaded(filename: str):
-    # Sadece filename'i kuyruğa ekle
+    # Add filename to the queue
     audio_queue.put(filename)
 
 def generate(response: str, ref_audio: str):
@@ -137,10 +132,9 @@ def generate(response: str, ref_audio: str):
 
         
 
-        #play_audio_threaded(filename)  # Kuyruğa ekle, thread oynatacak
-
+        #play_audio_threaded(filename)  # Add to the queue
 
 if __name__ == "__main__":
     threading.Thread(target=main,args=(sys.argv[0],face,), daemon=True).start()
-    lipsync.run()  # Pygame döngüsünü başlat
+    lipsync.run()  # Pygame start
 

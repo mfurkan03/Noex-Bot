@@ -1,10 +1,5 @@
-import os
-import sys
 import pyaudio
-from openai import OpenAI
 from google.cloud import speech
-
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "pazarlik-robotu-04e4fff35c71.json"  # kendi yolun
 
 def recognize_speech_while_pressed(pygame_object):
     RATE = 16000
