@@ -34,17 +34,7 @@ python start_conversation.py
 The bot listens, thinks (via OpenAI), and replies in Les Gold’s voice.
 
 Watch its mouth move as it talks.
-```
-🧩 Project Structure
-noex-bot/
-├── assets/                # Visuals for Pygame animation
-├── models/                # Orkhon TTS model files
-├── speech/                # Google Cloud STT integration
-├── tts/                   # F5-TTS inference code
-├── ui/                    # Pygame mouth animation
-├── noex_bot.py            # Main entry point
-└── README.md              # This file
-```
+
 🧠 Technologies Used
 OpenAI GPT (chat/completions)
 
