@@ -1,0 +1,5 @@
+src
+__pycache__
+.env
+pazarlik-robotu-google-cred.json
+output_wavs

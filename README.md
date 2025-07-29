@@ -16,20 +16,44 @@ noex-bot is an AI-powered, voice-interactive chatbot that mimics the personality
 
 🎤 Fully Voice-Driven – You speak, the bot listens and responds — no typing needed.
 
-
 F5 TTS with a fine-tuned Orkhon TTS model
 (refer to the F5 TTS GitHub page for model setup) : https://github.com/SWivid/F5-TTS
 
 Google Cloud credentials JSON for speech recognition
 
 2. API Keys
-Create a .env file with the following:
+   Create a .env file with the following:
+
 ```
 OPENAI_API_KEY=your_openai_api_key
 GOOGLE_APPLICATION_CREDENTIALS=credentials.json
 ```
 
+Installation
+
+First, create the environment
+
+```
+conda create -n noex python=3.10
+conda activate noex
+```
+
+Then install the Pytorch for your cuda version
+
+```
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+```
+
+Lastly, install the requirements using pip
+
+```
+pip install -r requirements.txt
+```
+
+Note! If you are using VSCode to run this application, don't forget to select the virtual environment you created as the interpreter or the program won't run properly!
+
 🎬 Running the Bot
+
 ```
 python start_conversation.py
 ```
@@ -49,7 +73,7 @@ Pygame for visual interaction
 
 ```
 @article{chen-etal-2024-f5tts,
-  title={F5-TTS: A Fairytaler that Fakes Fluent and Faithful Speech with Flow Matching}, 
+  title={F5-TTS: A Fairytaler that Fakes Fluent and Faithful Speech with Flow Matching},
   author={Yushen Chen and Zhikang Niu and Ziyang Ma and Keqi Deng and Chunhui Wang and Jian Zhao and Kai Yu and Xie Chen},
   journal={arXiv preprint arXiv:2410.06885},
   year={2024},

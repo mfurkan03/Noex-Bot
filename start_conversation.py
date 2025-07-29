@@ -14,6 +14,7 @@ import threading
 import queue
 from speech_rec import recognize_speech_while_pressed
 from realtime_lipsync import RealTimeLipSyncUI
+import time
 
 audio_queue = queue.Queue()
 
@@ -41,13 +42,13 @@ def main(filename,face):
         reply = response.choices[0].message.content
         #print("PawnBot:", reply, "\n")
         
-        generate(reply, ref_audio=r"C:\Users\alkan\OneDrive\Masaüstü\Dersler\term6\Foe\reference_audio.wav")  # Reference audio for voice cloning
+        generate(reply, ref_audio=r"reference_audio.wav")  # Reference audio for voice cloning
 
         messages.append({"role": "assistant", "content": reply})
 
         print("🎤 SPACE tuşuna basılı tutarak konuş (ESC ile çık)...")
         while not lipsync.space:
-            pass
+            time.sleep(0.01)
 
 
         user_input = recognize_speech_while_pressed(lipsync)
@@ -75,7 +76,7 @@ def audio_player_worker():
 #player_thread = threading.Thread(target=audio_player_worker, daemon=True)
 face = True
 #player_thread.start()
-lipsync = RealTimeLipSyncUI(open_img_path=r"C:\Users\alkan\Downloads\BotTalkTest\BotTalkTest\asset\open_mouth.png", closed_img_path=r"C:\Users\alkan\Downloads\BotTalkTest\BotTalkTest\asset\close_mouth.png",face = face)
+lipsync = RealTimeLipSyncUI(open_img_path=r"open_mouth.png", closed_img_path=r"close_mouth.png",face = face)
 
 def split_into_batches_smart(text: str, batch_size: int = 20) -> List[str]:
     # Seperate to sentences
